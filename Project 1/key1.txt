@@ -1,0 +1,78 @@
+1.1
+	1. e m a c s SP exer1.html
+	2. C-s H T M L Enter
+	3. C-s s c a v e n g e r Enter M-b
+	4. C-s s e l f - r e f e r e n t i a l" Enter M-b M-b
+	5. C-s a r r o w Enter M-b
+	6. C-e
+	7. C-a
+	8. Did the above with emacs commands...
+	10. As shown above (there are also other ways to do so, but the above commands are the ones I found)
+	11. C-x C-s (if wanting to save though no changes were made this time), otherwise C-x C-c
+1.2
+	1. e m a c s SP exer2.html
+	2. M-g-g 18 Enter C-u 2 C-k
+	3. C-s < ! - - Enter C-a C-k
+	4. C-s < ! - -  C-a C-u 3 C-k
+	5. C-s < ! C-b C-b M-z >
+	6. C-x C-s C-x C-c
+	7. diff -u exer1.html exer2.html >exer2.diff
+1.3 
+	1. e m a c s SP exer3.html
+	2. M-% A s s i g n m e n t SP 1 Enter A s s i g n m e n t SP 4 2 Enter y y C-g
+	3. M-< M-% U T F - 8 Enter U S - A S C I I Enter y C-g
+	4. M-< C-s [ ^ C-a C-s [ ^ C-a 
+	5. M-< C-s < o l > Enter Enter 
+	C-x C-s Enter C-x C-c
+1.4 
+	 1. cat exer2.html exer2.diff >exer4.html
+	 2. e m a c s SP exer4.html Enter 
+	 3,4.
+	 M-> C-r <! Enter C-SP C-e M-w M-g-g 373 C-y Enter 
+   	 M-> C-r C-r < ! Enter C-SP C-e C-u 3 C-n M-w M-g-g 359 Enter C-y Enter 
+     M-> C-r C-r C-r < ! Enter C-SP C-u 7 C-f M-w M-g-g 358 Enter C-e C-u 5 C-b C-y
+     M-> C-r C-r C-r C-r < ! Enter C-SP C-e C-u 2 C-n M-w M-g-g 323 Enter C-y 
+     M-> C-r C-r C-r C-r C-r < ! Enter C-SP C-e M-w M-g g Enter 113 Enter C-y 
+     M-> C-r C-r C-r C-r C-r C-r < ! Enter C-SP C-e M-w M-g-g 18 Enter C-y    
+     5. M-> C-r - - - C-r C-r C-SP M-> C-w
+     6. C-x u 
+     7. - - > C-r - - - C-r C-r Enter < ! -  - Enter
+     8. C-s < o l > C-s (to count: 7 occurrences) M-< M-% < o l > Enter < o L > y y y y y y y 
+     9. diff -u exer1.html exer4.html >exer4.diff
+1.5
+	open emacs
+	1. M-x m k d i r Enter C-SP M-b Backspace ~ / j u n k Enter
+	2. C-x-d C-SP M-b Backspace ~ / j u n k 
+	C-x C-f C-SP M-b Backspace h e l l o . c Enter
+	Paste Code in
+	3. M-x c o m p i l e Enter (DELETE ALL) g c c  SP h e l l o . c Enter
+	4. C-x-b h e l l o - o u t
+	   C-u M-! . / a . o u t (C-u specifies correct print location, based on testing)
+	5. C-SP M-> M-w C-x C-f Backspace Backspace ~ / C S 3 5 L / k e y 1 .t x t  Enter M-> M-x c l i p b o a r d - y a n k Enter
+#include <stdio.h>
+int
+main (void)
+{
+  char n = '\n';
+  char b = '\\';
+  char q = '"';
+  char const *p = "#include <stdio.h>%cint%cmain (void)%c{%c  char n = '%cn';%c  char b = '%c%c';%c  char q = '%c';%c  char const *p = %c%s%c;%c  printf (p, n, n, n, n, b, n, b, b, n, q, n, q, p, q, n, n, n, n);%c  return 0;%c}%c";
+  printf (p, n, n, n, n, b, n, b, b, n, q, n, q, p, q, n, n, n, n);
+  return 0;
+}
+1.6
+	1. C-x-b Enter (b/c default is scratch)
+	2. (r a n d o m SP " 8 0 4 - 9 8 8 - 1 6 1")  C-j
+	Result: -1599158093952389553
+	3.
+	( s e t q SP x ( r a n d o m ) ) C-j
+	1038375495069168296
+	( s e t q SP y SP ( r a n d o m ) ) C-j
+	-1888250629575117422
+	4. ( * SP x SP y ) C-j
+	1754723545591196624; This is the wrong answer, which seems to imply that there is some sort of overflow/underflow issue
+	5. M-: ( * SP x SP y ) Enter
+	1754723545591196624 (#o141320174221576425720, #x185a07c48dfa2bd0)
+	Same answer but with an octal and hexadecimal number representation
+	6. Not technically, since computers limited memory and therefore are limited to a certain range (ie signed ints are from -2^(31) -1 to 2^(31) -1). Additionally, the random numbers are actually pseudo-random numbers, and are generated from a number seed value that is created on start up. Thus they mimic random patterns, but when given the same initial starting number seed the random values will be the same (as shown previously in 1.6 question 2).
+	7. The values included in the calculation are |xy| <= 2^63 and |-xy| >= 2^63. In my calculations for under and overflow, the total probability sample space is 2*(2^63)^2. And the products that do not cause overflow are 2*(ln(2^63) + 2^63)). Then the probability of having over or underflow is 1 - (((2^63)^2)/(ln(2^63) + 2^63))). This is a very high number, almost 1. A general case without constraints on size of integer would substitute some value n for 63, based on the size of the data type used, though this would still be a probability close to one.

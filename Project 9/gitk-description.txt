@@ -1,0 +1,7 @@
+The main upper window shows commit history and different branches throughout the repository's history.
+
+Directly to the right are the users who made the commits and the timestamp for each one.
+
+Bottom left corner shows the diff file of the changes for each commit.
+
+Bottom right corner shows the files being changed.

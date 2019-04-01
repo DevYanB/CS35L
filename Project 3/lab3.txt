@@ -1,0 +1,62 @@
+1. Get coureutils source, then unpack with tar:
+$ wget ftp://ftp.gnu.org/gnu/coreutils/coreutils-8.29.tar.xz
+$ tar -xvf coreutils-8.29.tar.gz
+
+2. Make a directory to configure the coreutils into, go into 
+coreutils directory, then configure with the appropriate prefix
+$ mkdir coreTemp
+$ cd coreutils-8.29
+$ ./configure --prefix=/u/cs/ugrad/devyan/p3For35L/coreTemp
+
+Then you can make and make install
+$ make
+$ make install
+
+3. To reproduce the error, export the locale, just in case, then 
+cd into the folder where the coreutils is loaded into then run:
+$ cd ~/p3For35L/coreTemp/
+$ export LC_ALL='en_US.UTF-8'
+$ ./bin/ls -a
+$ ./bin/ls -A 
+$ ./bin/ls -a -A (or -aA)
+$ ./bin/ls -A -a (or -Aa)
+(The above lines can also be executed anywhere as long as you know 
+the path to the buggy version of ls that we are going to fix)
+
+4&5. Use emacs in the main directory, ie the top of the source tree,
+of the coreutils-8.29 package and create a diff file containing the 
+patch. Then, patch it in with the command and make.
+$ cd ~/p3For35L/coreutils-8.29/
+$ emacs patch.diff
+$ patch -p1 < patch.diff
+$ make
+
+6. Finally, test it out!
+$ cd coreutils-8.29
+$ ./src/ls -a
+.		configure      maint.mk       src
+..		configure.ac   Makefile       .tarball-version
+ABOUT-NLS	COPYING        Makefile.am    tests
+...
+
+$ ./src/ls -A 
+ABOUT-NLS	COPYING        Makefile.am	 tests
+aclocal.m4	dist-check.mk  Makefile.in	 THANKS
+AUTHORS		doc	       man		 thanks-gen
+...
+config.status	.mailmap       README		 .vg-suppressions
+
+$ ./src/ls -a -A 
+ABOUT-NLS	COPYING        Makefile.am	 tests
+aclocal.m4	dist-check.mk  Makefile.in	 THANKS
+AUTHORS		doc	       man		 thanks-gen
+...
+config.status	.mailmap       README		 .vg-suppressions
+
+$ ./src/ls -A -a 
+.		configure      maint.mk       src
+..		configure.ac   Makefile       .tarball-version
+ABOUT-NLS	COPYING        Makefile.am    tests
+
+Compared to the buggy version in coreTemp, this is now
+working correctly!

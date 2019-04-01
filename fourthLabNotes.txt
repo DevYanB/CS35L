@@ -1,0 +1,21 @@
+Quantification:
+- Times of prev exp
+- ?(0 or 1), *(0 or more), +(1 or more)
+- aab?b: aabb or aab are valis (0 b's or 1 b)
+
+sed: $sed 's/unix/linux/2
+- Use the /1, /2 etc flags to replace the first, second occurrence of a pattern in a line. The below command replaces the second occurrence of the word “unix” with “linux” in a line
+sed: $sed 's/unix/linux/'
+- Sed command is mostly used to replace the text in a file. The below simple sed command replaces the word “unix” with “linux” in the file.
+
+Getting subdirectories in a directory:
+- ls -l | grep ^d (^ matches anything with the following char/word)
+- | is the pipeline
+
+grep matches lines
+- echo "To be or not to be" | grep ".*be$"
+	- output: to be or not to be
+- echo "To be or \nnot to be" | grep ".*be$"
+	- output: not to be
+- echo "To be or \nnot to be" | grep "T.*e$"
+	- Nothing

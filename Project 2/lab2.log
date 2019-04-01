@@ -1,0 +1,133 @@
+Ensure correct encoding with: export LC_ALL='C'
+
+#=============================================================================
+Try out the first few commands with correct pipelining
+#=============================================================================
+
+tr -c 'A-Za-z' '[\n*]' < hwn.html
+- gets all words/characters and includes the spacing and new lines between the 
+words
+
+tr -cs 'A-Za-z' '[\n*]' < hwn.html
+- gets all words and removes extra spaces/newlines between words, unlike
+previous command that includes the spacing between words the original html
+has b/t them
+
+tr -cs 'A-Za-z' '[\n*]' < hwn.html | sort
+- returns the same words as the previous command but puts them in alphabetical
+order
+
+tr -cs 'A-Za-z' '[\n*]' < hwn.html | sort -u
+- returns the same as the previous command but removes repeat words/characters
+
+tr -cs 'A-Za-z' '[\n*]' < hwn.html | sort -u | comm - words
+	- compares all the sorted words in file 1 with those in words, file 2, and
+	prints the words unique to 1 in one column, the ones unique to 2 in
+	another column, and common words in column three to the terminal
+
+tr -cs 'A-Za-z' '[\n*]' < hwn.html | sort -u | comm -23 - words
+	- prints the words unique to file 1 instead of those shared by both and
+	unique to file 2.
+
+#=============================================================================
+Lab Portion: buildwords script
+#=============================================================================
+
+wget http://mauimapp.com/moolelo/hwnwdseng.htm
+
+Description of each line (in the actual process I went step by step and checked
+the input, and so I will describe as such!)
+
+0. #! /bin/bash
+- Tell the interpreter which subshell system to use while parsing through our
+script
+
+1. grep -E "<td>.+</td>"
+- This line essentially grabs all the words/strings in between the <td> and
+</td> tags
+
+2. sed "1~2d"
+- This line essentially removes the english words in the list by deleting
+every other line
+
+3. sed "s/<[^>]*>//g"
+- This command removes all of the html tags
+
+4. tr [:upper:] [:lower:]
+- This command translates all uppercase characters to their lowercase
+equivalent
+
+5. tr "\`" "\'" 
+- This command replaces all ` with ' so that it is syntactically
+correct as the Hawaiian 'okina
+
+6. sed -E "s/,\s|\s/\n/g"
+- This command replaces all commas and spaces with the newline character.
+
+7. grep "^[pk\' mnwlhaeiou]\{1,\}$"
+- Grabs any organization of the valid hawaiian characters and symbols
+and disregards any of the other symbols
+
+8. sed '/^$/d'
+- Remove all empty lines
+
+9. sort -u
+- Sorts in alphabetical order and then prints out the unique strings
+
+
+For execution:
+$ chmod u+x buildwords
+
+$ ./buildwords < hwnwdseng.htm > hwords
+
+$ wc -w hwords
+205 hwords
+
+For Spell Check:
+English:
+$ tr -cs 'A-Za-z' '[\n*]' < assign2.html |
+tr '[:upper:]' '[:lower:]' | sort -u | comm -23 - words 
+> misEnglish
+
+$wc -w misEnglish
+38 misEnglish
+
+Hawaiian:
+$ tr -cs "pk\'mnwlhaeiou" '[\n*]' < assign2.html |
+tr '[:upper:]' '[:lower:]' | sort -u | comm -23 - hwords 
+> misHaiwaiian
+
+$wc -w misHaiwaiian
+199 misHaiwaiian
+
+Misspelled as English but not Hawaiian:
+$ tr -cs "pk\'mnwlhaeiou" '[\n*]' < misEnglish|
+sort -u | comm -12 - hwords > misEngnHai
+
+$ wc -w misEngHai
+6 misEngHai
+Examples:
+e
+halau
+i
+lau
+po
+wiki
+
+Misspelled as Hawaiian but not English:
+$ tr -cs 'A-Za-z' '[\n*]' < misHaiwaiian |
+sort -u | comm -12 - words > misHainEng
+
+$ wc -w misHainEng
+109 misHaiEng
+Examples:
+k
+keep
+kin
+l
+lan
+le
+lea
+li
+like
+line

@@ -1,0 +1,24 @@
+$ time cat output.txt | ./sfrobs
+real	0m10.476s
+user	0m0.246s
+sys		0m0.103s
+
+$ time cat output.txt | ./sfrobu
+real	0m14.221s
+user	0m1.510s
+sys		0m7.362s
+
+$ time cat output.txt | ./sfrob
+real	0m0.002s
+user	0m0.000s
+sys		0m0.002s
+
+$ time cat output.txt | ./sfrob -f
+real	0m0.005s
+user	0m0.002s
+sys		0m0.002s
+
+$ time cat output.txt | ./sfrobs -f
+real	0m10.710s
+user	0m0.232s
+sys		0m0.105s

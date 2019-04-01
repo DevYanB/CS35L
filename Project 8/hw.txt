@@ -1,0 +1,23 @@
+1. Even if another team was able to access the information being passed across
+the network, each byte is encrpted. Since they would not have the public key,
+they would not be able to translate the bytes.
+
+Now, if the keyboard was tapped, two things could happen: either this was the first
+time attempting the client-server connection, in which case the passphrase would
+be compormised by the keylogging, or it was not the first time, which means the
+private key would still be safe. This is of course assuming you do not
+have password authentication enabled.
+
+The last case is probably the main issue. This is just like in the movies where
+you need the flash drive to be able to understand some bad guy's encryption.
+If you had unprotected ssh files and the other team had physical access to 
+the information, they would hace access to your private key and be able to 
+decrypt your info.
+
+2. The gpg --verify command is only verifying that the public key used goes
+along with the digital signature. Interception of this info could mean that
+the verify command is open to fault. Essentially, as long as you sign it
+correctly, you could modify the original file and still have it as verified.
+
+To resolve, maybe utilize this stream of logic and have some 3rd party verify
+the file integrity.

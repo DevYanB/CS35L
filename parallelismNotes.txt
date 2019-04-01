@@ -1,0 +1,42 @@
+- Multithreading: parallel functions run, can be done in alternating for uni-processor systek
+- Multitasking: alternating for uniprocessor, can be done in parallel with multiple processor system
+
+- | == pipe command
+	- Pipe makes system calls
+	- transfer data from first to second command
+
+- Each process has its own address space
+- Each process can be put into pipe
+
+- Thread
+	- Flow of instructions
+	- Path of execution within a process.
+	- Thread is smallest unit of processing by OS
+
+- Process consists of @ least 1 thread
+	- Multiple threads run on:
+		- Uniprocessor (time-sharing system)
+			- processor switches b/ßß]]t threads, illusion of parallelism
+		- Multiprocessor
+			- Multiple processors/cores run the threads at the same time, true parallelism
+
+One processor, many threads:
+Thread 1 |------|				|------|
+Thread 2 		  |-----|				 |------|
+Thread 3				 |-----|
+
+Many threads, many processors:
+Thread 1 |-------------------------|
+Thread 2 |-------------------------|
+Thread 3 |-------------------------|
+
+- New webpage:
+	- Multi threat html reference downloading
+- GUI interaction: background thread does a calculation and reflects back to the GUI
+- Google Webserver can handle many requests at once
+
+- Each thread shares code, global data, and heap from the main process and its memory, but maintain their own individual stacks
+	- ***No system calls needed since memory is shared
+	- Shared memory makes multithreading very powerful, efficient(no need for system calls and easy/quick destruction of threads), but non-trivial(how to deal with access/change to smae information over threads)
+
+- A race condition is an undesirable situation that occurs when a device or system attempts to perform two or more operations at the same time, but because of the nature of the device or system, the operations must be done in the proper sequence to be done correctly [Wikipedia]

@@ -1,0 +1,28 @@
+GPG
+
+The GNU Privacy Guard
+
+Generate a key for yourself
+gpg —gen-key
+- This will take you through a few questions that will configure your keys
+    - Name, email address, etc.
+
+gpg —list-keys
+- This will list the keys you have
+    - Pub: public key; UID: user id; Sub: subordinate key
+    - SC: Signing; E: Encryption
+
+gpg -s -a
+- This will generate a signature in ASCII
+    - Read the manual to learn -s and -a
+
+gpg —verify
+- This will generate a signature in ASCII
+    - Read the manual to learn —verify
+
+gpg -e -a -r [recipient’s email]
+- This will encrypt the message using recipient’s public key
+    - Read the manual to learn -e, -a, and -r
+
+gpg -d
+- This will decrypt the message using one’s own private key

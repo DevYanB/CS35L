@@ -1,0 +1,35 @@
+Q1. This improves the functionality of ls for the specified
+purpose of the lab. However, now there is a sense of
+which flag overrides what, since it will always choose the latter
+flag. So the use of the first flag could be considered
+redundant.
+
+Q2. If there are any existing scripts or files that utilize the 
+aforementioned utility of the ls -a -A (or vice versa)
+situation, then problems may occur. Additionally, when
+Going through subdirectories recursively, this would become
+an issue.
+
+Q3. If you run the program with a null input/empty input
+ such as with /dev/null, then you get an indexing error,
+  essentially like an out of bounds error for the list.
+  Because the empty file is being operated on under the
+  assumption it has something in it, we get a seq error:
+ 
+File "/usr/lib64/python2.7/random.py", line 274, in choice
+    return seq[int(self.random() * len(seq))]  # raises IndexError if
+    seq is empty
+IndexError: list index out of range
+
+Q4. The error is:
+  File "randline.py", line 66
+    except IOError as (errno, strerror):
+                      ^
+SyntaxError: invalid syntax
+This is most likely because Python3 updated tuple parameter passing with
+exceptions (ie, automatic tuple unpacking). In python 2, the parameters
+for an exception were iterable, and you could go through them by iterating
+over there exception. Essentially it would auto-unpack tuples passed to the
+exception. This was changed in python 3 and you can only have one thing in
+the exception.
+

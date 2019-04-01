@@ -1,0 +1,103 @@
+Version control system (VCS): Git!
+
+It allows for the softwre development process to be easier.
+- New features added
+- Bug fixes
+- Performance enhancements
+- IF there are many teams working on one source code in same/different parts
+- Many versions of a single project
+- Track chamges made and who has made them
+	- Track the entire history of the software
+
+There are also others, ie subversion, perforce, etc...
+
+Local verison control
+- Organize versions as folders on a local machine - NO SERVER IVOLVED	
+- Other users copy it via disk/network
+
+Central Version Control
+- Version history sits on server or cloud
+- Users get working copy of files
+- Changes are committed to the server
+- Authorized users can get the changes
+
+Distributed Version Control
+- Version history is replicated on every machine
+- Users have version control at all times
+- Changes communicated b/t users
+- Git is a distributed system
+
+Terminology in Version Control System
+- Repository: contains files and golders related to code
+	- Full history of project recorded by repo
+- Working copy: Copy of project's files in repo
+- Check out: Create working copy of repo to use
+- Commit: Write the changes made in the working copy to the repo
+	- Commmits are recorded by the version control system
+
+Git!!!
+- Free open source distributed VCS
+- Handles samll -> large projects 
+- Used all the damn time...
+
+Git Repo Objects
+- Objects used by git:
+	- Blobs: seq of bytes
+	- Trees: A group of blobs or trees
+	- Commit: A particular git commit which contains all info about the commit
+	- Tags: unique name for a commit abject for convenience
+- Objects are uniquely identified with hashes
+
+
+Local Operations
+- Get working copy from a repo
+- Make changes
+- Commit local changes to a repo
+- Stage files from working directory into staging area, then from staging area commit to git repo
+
+More terminology
+- Head refers to commit object
+	- Can be more than one heads in repo
+- HEAD refers to current active head
+- Branch refers to a head and its entire set of ancestor commits
+- Master Branch is the defauklt branch
+- Detached HEAD is if a commit is not pointed to by a branch
+
+Useful Git commands
+- git init creates an empty git repo
+	- creates a hidden .git sub directory in the current directory and contains all the metadata abt the repo
+	- drwxr-xr-x  3 devyan csugrad 4096 Oct 22 10:33 .
+	  drwx------ 33 devyan csugrad 8192 Oct 22 10:32 ..
+	  drwxr-xr-x  7 devyan csugrad 4096 Oct 22 10:33 .git
+- git add .
+	- stage your changes
+	- A must before commit
+- git fommit commits staged changes to the repo and create a new git commit
+	- Commit message to let yourself and others know the purpose of the change and other info as well!
+- git clone created a copy of an existing repo
+- git status shows your modified and added files
+- git diff shows changes we made compared to current commit and staged files
+- git diff HEAD shows changes we made compared to the HEAD commit
+- git checkout jumps you to the specific commit or branch or tag, can also use to reset changes
+- git branch, git checkout -b [name] creates a new branch on the current commit or a specified commit
+- git tag creates a tag to the current commit
+
+Two ways to integrate changes from multiple branches
+- Merge two branches into one (makes branches messy)
+- Rebase copies hte changes make to one to another (keeps branches linear)
+- git rebase rebases the current branch onto specified commit or branch
+- git merge merges a specified com,mit or branch into the current branch
+
+
+
+
+
+
+
+
+
+
+
+
+
+

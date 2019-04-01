@@ -1,0 +1,32 @@
+Python lists
+- can reverse index
+- can hold values of different types
+
+Python add lists: +
+- In c++, had to copy over all unique elements from one
+
+Dict in python
+- Is a hash table
+- dict = {} //empty dictionary
+- Keys are unique, values are not! Keys are immutable(strings, numbers, tuples)
+
+Set
+- Unordered collection with no duplicates
+- no key, only values
+- set_name = {e1, e2} //doing {} makes it into a dictionary
+
+Python randline.py script:
+
+#!/usr/bin/python //tells interpreter to use python
+
+import random, sys //imports libraries random, and sys(like stdl in c and iostream in c++)
+from optparse import OptionParser //import a part of a library
+
+[LOOK AT RANDLINE.PY IN P3 FOLDER IN LNXSRV]
+
+def chooseline(self): #self is a default, so technically 0 parameter function like in c++
+- self is a keyword, self is an isntance of the class (ie like an object)
+- hidden parameter, like "this" in C++, only self must be said explicitly
+
+python randline.py assign3.html //prints a random line from assign3.html
+python randline.py assign3.html -n 3 //prints 3 random lines from assign3.html

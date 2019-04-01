@@ -1,0 +1,60 @@
+#!/bin/bash
+
+dir=$1
+
+ret=`ls $dir | sort`
+hidden=`ls -a $dir | grep '^\.' | sort`
+let size=0
+declare -a FDarr
+
+restore="$IFS"
+IFS=$'\n'
+
+for fileH in $hidden
+do
+    if [ -L "$dir/$fileH" ]
+    then
+    :
+    elif [ ! -f "$dir/$fileH" ]
+    then
+    :
+    elif [ ! -r "$dir/$fileH" ]
+    then
+    echo "$fileH is not readable"
+    else
+    FDarr[$size]="$dir/$fileH"
+    let size=size+1
+    fi
+done
+
+for file in $ret
+do
+    if [ -L "$dir/$file" ]
+    then
+    :
+    elif [ ! -f "$dir/$file" ]
+    then
+    :
+    elif [ ! -r "$dir/$file" ]
+    then
+        echo "$file is not readable"
+    else
+        FDarr[$size]="$dir/$file"
+        let size=size+1
+    fi
+done
+
+for (( i=0; i<$size; i++ ))
+do
+    for (( j=i+1; j<$size; j++ ))
+    do
+        cmp -s "${FDarr[$i]}" "${FDarr[$j]}"
+        if [ $? -eq 0 ]
+        then
+            ln -fP "${FDarr[$i]}" "${FDarr[$j]}"
+	    FDarr[$j]=FDarr[$i]
+        fi
+    done
+done
+
+IFS=$restore

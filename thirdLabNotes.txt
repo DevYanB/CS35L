@@ -1,0 +1,117 @@
+PATH and HOME: Environment variables
+- HOME: PAth to user's home dir
+- PATH: List of dirs to search in for command to execute
+- use echo $VAR to see 
+- Change value: export VARIALBE=[...]
+- Example:
+	ls
+	export PATH=/opt/bin
+	ls now does for /opt/bin
+
+locale:
+- Set of params that define user cultural preference
+	- language
+	- country
+	- other area specific things
+- locale gets data from LC_* environment variables
+	- LC_TIME: Date and time formats
+	- LC_NUMERIC: Non monetary numeric formats
+	- LC_COLLATE: Order for comparing and sorting
+	- LC_COLLATE='C': Sorting in ascii order (C stands for posix)
+	- LC_COLLATE='en_US': sorting case insensitive except when two strings are equal and one has uppercase earlier than other
+	- OTHER LOCALES HAVE OTHER SORT ORDERS
+
+- sort: sorts lines of text files
+	- sort [OPTION]...[FILE]...
+	- depend on locale
+	- C locale: ASCII sorting
+- comm: compare two sorted files, line by line
+	- comm [OPTION]...[FILE1] [FILE2]
+-tr: translate or delete characters
+	- echo "welcome to cs35L" | tr ["a-z"] ["A-Z]"
+
+THE SHELL
+- Shell is user interface with OS
+- Accepts commands as text, interprets, uses OS API to carry out task user says
+- Common shells: bash, sh, csh, ksh
+- Shell script is file with shell commands
+	- When executed, child shell process is spawned to run it
+	- First line is used to state which child shell to use:
+		- #! /bin/sh
+		- #! /bin/bash
+		- NOTE: Use the absolute path for the script
+	- #! is shebang. From wikipedia: An interpreter directive is a computer language construct, that on some systems is better described as an aspect of the system's executable file format, that is used to control which interpreter parses and interprets the instructions in a computer program.[1]
+- rm -rf: r will recursively delete files
+- Execution tracing within a script
+	- set -x to turn on, set +x to turn off
+- Or, can use echo or printf
+	- echo: writes args to stdout, cant output excape chars w/o e
+	- printf: can output data with complex formatting, like C printf()
+- Variables in shell scripts
+	- var="hello"
+	- Notice no space around = sign
+	- want to read value later, use echo $var, $ is prefix for var name, not word
+- Vars defined in shell script (echo $[var]):
+	- #: Number of args. in current process
+	- @: Command lien args to current process
+	- *: Same as above
+	- -: Options given to shell on invocation
+	- ?: Exit status of previous command
+	- $: Process ID of shell script (in shell script)
+	- 0: Name of shell program
+	- !: PRocess id of last backrgound command
+	- [REST ON SLIDES]
+	***- $[Number]: arg number/parameter in list passed to script when executed/run
+		- If number > 9, enclose with braces ,Ie, {10} , {213}
+- Quotes:
+	- '': Do not expand at all, literal meaning
+	- "": Weak quote, expand backticks and $
+	- `` or $(): Expand as shell command
+- if statements: if...[conditional]...then...fi
+	- -gt: greater than
+	- else [condition]
+- while: while...[conditional]...do...done
+- for: for...[condition]...do...done
+
+Redirection and pipelines
+- program < file: redirects file to program's stdin
+- program > file: redirects file to program's stdout
+- program >> file: appends program's stdout to file
+- program1 | program2: assigns stdout of program one to stdin of program 2 //One command feeds into the other
+	- Example: cat < fileA | sort < fileB
+
+Regular Expression:
+- notation that lets you search text with a particular pattern
+	- Strings that starts with letter a, ends with three uppercase letters
+	- Strings that are in [letters and numbers]@[letters and numbers].[letters]
+	- put regex in []
+	***- \: Turns off the special meaning of a character, can be used to enable special meaning for following character, such as \(...\) and \{...\}
+	- .: wildcard, match any single character except null
+	- *: matching any number of the single char that precedes it
+	- ^: Matches following regex at beginning of line or string
+	- $: matches following regex at end of the line or string
+	- [...][^...]: Matches any one of the enclosed characters. - indicates range of consecutive characters. ^ as first char in brackets reverses: matches any one char not in list
+		- [Rr]: either r or R
+	- \{m,n\},{m,n}: Matches range of occurence of single char that immediately preceres it. \{m\} gets exactly m ocurences. \{n,\} at least n occurences, and other gets b/t m and n
+		- reg{2,5}ex: re + repetitive g for 2-5 times + ex anywhere on a line
+	- \(\) , (): Save patterhn encloses in special area (up to 9 on a single pattern of this)
+
+Posix Braket Expressions:
+- [:alnum:] : alphanumeric chars (regex equivalent: [a-zA-z0-9])
+- [REST ON SLIDES]
+
+***Searching for text:
+- grep: uses basic regular expressions (BRE)
+	- meta characters ?,+,{,|,(, and ) lose special meaning; use \ version instead
+- egrep (grep -E): uses extended regular expressions (ERE) - no backslash needed
+- fgrep (grep -F): matches fixed strings instead of regexp
+
+Replace text
+- sed '/s/regExpr/relpText/[g]'
+
+
+
+
+
+
+

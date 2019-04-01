@@ -1,0 +1,27 @@
+make
+- updates only changed ones
+
+makefile
+- has target : prerequisite
+		command
+
+Build Process:
+- confiugre
+	- Script that checks details about the machine before install
+	- Dependency b/t packages
+	- Creates the Makefile
+- make
+
+Diff and Patch
+- diff [original] [updated]
+- Output format:
+	- line number
+	- operactions (c: replace, d: delete, a: append)
+- create a patch: diff [original] [updated] > [fileName].patch
+
+Unified format in diff
+- add -u for diff as flag. Nicer format tbh, it is only for gnu
+- @@: begin of a hunk
+
+Applying patch:
+- patch [original file] -i [patch file] -o [updated file]

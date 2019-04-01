@@ -1,0 +1,79 @@
+Logged into server09:
+
+1. The equivalent to apropos <keyword> using man is man -k <keyword>
+
+2. Using the which command and whereis, which locates a program's relative path and whereis its absolute path, 
+mv is located in /usr/bin/sh, more specifically in /usr/local/cs/bin/mv /usr/share/man/man1p/mv.1p.gz /usr/share/man/man1/mv.1.gz
+sh is in /usr/bin/sh, more specifically in /usr/bin/sh /usr/share/man/man1p/sh.1p.gz /usr/share/man/man1/sh.1.gz
+
+3. Using find, and searching within the OS defined executables (/usr/bin as shown above), using the command: find /usr/bin -executable -name "?r", we get the list of two character ending in r executables:
+	/usr/bin/ar
+	/usr/bin/pr
+	/usr/bin/tr
+
+
+4. readlink /usr/bin/emacs:
+   /etc/alternatives/emacs
+
+5. The /usr/bin/gcc --version is 4.8.5
+	whereis gcc:
+	... /usr/local/cs/bin/gcc/
+	/usr/local/cs/bin/gcc --version is 8.2.0
+
+	The one in usr/bin/gcc is installed by the linux distributor, but the other one is installed by someone else
+
+6. Reading through the man page on chmod, u specifies the user who owns the file, s is to set group or user ID on execution, x is for adding the execute permission, and + is for adding the specified permission bits, so u+sx represents setting user ID on execution (as if root were running it) for a file and making the file executable. 
+
+o is to specify other users besides the file's owner not in the file's group, w is the write permission, and - is for removing the permission, so o-w removes the write permission for other users not in the file's group.	
+
+7. Reading through the documentation from man find, the flag -mtime -28 will search for files modified (in terms of data) in  the past 4 weeks. Then we just need to add the tag to specify directories.
+find . -type d -mtime -28 (. is there to specify the current directory)
+
+8. -type l seems to be a way to check symbolic links. But first, find the location of find using which. Then for that directory use find with the -type l flag:
+
+which find
+find /usr/bin -type l > noSymb
+wc -l noSymb (to see how many there are)
+
+There are 302 symbolic links in the /usr/bin/ directory
+
+9. I made an observation that in ls's flags there is a -t flag, which orders files from newest to oldest, oldest appearing last. Using this, we can find out what the oldest file is!
+
+cd /usr/lib64
+ls -lta | grep [-?]
+
+The oldest regular file is:
+-rwxr-xr-x.  1 root root       19408 Dec 28  2013 librom1394.so.0.3.0
+
+10. After spending some time reading the man locale entry, i went to the bottom and found localedef, which upon reading the man page for that, discovered that localedef compiles locale definition files. (However, I also found setlocale sets current locale). It also seems from man 7 locale that LOCPATH is a specific variable that stores the path, which is /usr/lib/locale. Essentially, it takes information from local environment variables.
+
+11. Use C-h a "downcase" to find all the programs with downcase in the name (I used C-h ? first to figure out how to do this):
+
+downcase-region               C-x C-l
+   Convert the region to lower case.  In programs, wants two
+   arguments.
+downcase-word                 M-l
+   Convert following word (or ARG words) to lower case, moving over.
+
+12. 
+	C-M-r : Reverse regexp search
+	C-M-s : Regular regexp search
+	C-M-t : Transpose expressions
+	C-M-u : Move up in parentheses structure (backward out of one level of parentheses)
+	C-M-v : Scroll to the next window
+
+13. C-g stops any half typed or "running" commands
+
+14. yank is the command to paste/reinsert the line recently "killed"/deleted. You can either do C-y to yank the most recently killed text, or use M-y to replace the text most recently yanked with an earlier batch of killed text.
+
+15. Comparing 
+cd /usr/bin && ls -l
+and 
+C-x d /usr/bin
+Shows the only difference is that dired shows the . and .. hidden directories, which for ls needs -a flag:
+ dr-xr-xr-x.   2 root root       81920 Sep 27 13:15 .
+ drwxr-xr-x.  16 root root        4096 May 22 08:13 ..
+
+
+
+

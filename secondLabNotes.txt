@@ -1,0 +1,55 @@
+
+//==================================================================================================================
+GENERAL LINUXOS STUFF
+//==================================================================================================================User/group management in linuxOS:
+	add user: adduser [new_account] OR useradd[new_account]
+	edit user attribvutes: usermod
+	remove user: userdel -remove [user[]
+
+	add group: groupadd
+	adding user to group: usermod
+	remove a group: groupdel
+
+Process management with ps and kill
+	- Process: Instance of computer program in execution
+	- ps: list processes that are currently running
+	- kill: terminate a running process
+		kill <PID>
+
+Daemon: 
+	- A process that runs in the background
+	- Example: cron
+		- Enables users to shcedule jobs to run periodically at certain times (cron jobs)
+		- Usage: Full backup every month
+
+diff command:
+	shows differences in files
+	echo "Hello" > file1
+	echo "Helloo" > file2
+	diff file1 file2
+	: 
+	1c1
+	< Hello
+	---
+	> Helloo
+
+wget: download things off of the 
+	- Non-interactive network downloader
+
+//==================================================================================================================
+EMACS
+//==================================================================================================================
+
+Emacs is:
+	- Customizeable (users can customize font, colors, etc... in ~/emacs without programming)
+	- Extensible (run lisp scripts to define new commands)
+	- Self Documenting (C-h r [manual] and C-h t [tutorial])
+	- Real-time (edits are displayed on screen as they occur)
+
+Basic Editing (SLIDES)
+
+Directory edit and navigate:
+	- C-x d
+	- Allows you to operate on files
+	- Allows you to nagivate file system
+

@@ -1,0 +1,17 @@
+2018-11-01  Devyan Biswas  <devyan@lnxsrv07.seas.ucla.edu>
+
+        * timespec.h (timespec_cmp): Fix integer overflow issue with arithmetic by doing with 
+        comparison
+---
+--- lib/timespec_o.h	2018-11-02 01:40:07.492146000 -0700
++++ lib/timespec.h	2018-11-02 01:45:38.908661000 -0700
+@@ -45,8 +45,7 @@
+ static inline int
+ timespec_cmp (struct timespec a, struct timespec b)
+ {
+-  int diff = a.tv_sec - b.tv_sec;
+-  return diff ? diff : a.tv_nsec - b.tv_nsec;
++  return a.tv_sec > b.tv_sec ? 1 : (a.tv_sec < b.tv_sec ? -1 : a.tv_nsec - b.tv_nsec);
+ }
+
+ # if ! HAVE_DECL_NANOSLEEP

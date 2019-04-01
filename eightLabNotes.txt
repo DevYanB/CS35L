@@ -1,0 +1,35 @@
+GDB: GNU Debugger
+
+Run and start, step through with n, and go into with s, f for finish run of code, c continue to next breakpoint
+
+break file1.c:6
+break my_function
+break [position] if [expression]
+
+(gdb) info [stuff]
+- stuff: functions, breakpoints, etc...
+
+delete [breakpoint name]
+
+(gdb) watch [var_name] //to watch for changes
+(gdb) rwatch [expression]
+
+(gdb) print [format][expression]
+
+line will execute/execute change on one line when you move onto next line
+
+Intro to Process Memory
+- Stack: push frame invoked, pop with function return
+
+void *malloc (suze_t size);
+- Allocates size in bytes and returns a pointer to the allocated memory
+
+void *realloc(void *ptr, size_t size);
+- Changes siuze of the memory block pointed to by ptr to size bytes
+
+void free(void *ptr);
+- Frees the block of memory pointed to by ptr
+
+
+
+

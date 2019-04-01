@@ -1,0 +1,132 @@
+What is open source software:
+- Source Code is publically available
+- Anyone can modify
+
+Open Source Operating Systems (Os's):
+- Kernel: Core of operating system (Abstraction of hardware!)
+	- Allocates time and memory to programs
+	- Handles the file system and communication b/t soft and hardware
+- Shell: Interface between user and the kernel
+	- Interprets commands user enters
+	- Takes action to enable and cause commands to be executed
+- Programs
+
+Command Line Interface (CLI):
+- Steep Learning curve
+- Pure control
+- Cumbersome multitasking
+- Convenient remote access
+- Faster performace and uses less resources
+
+Graphic User Interface (GUI):
+- Ease of use and intuitive
+- Easy multitasking
+- Bulky remote access
+- Slower
+- Uses more resources
+
+//==========================================================
+
+SHELL BASICS:
+
+<up arrow>: previous command
+
+<tab>: auto complete
+
+cd ../: is going into the upper level in the folder hierarchy
+
+~: is home directory (can set to whatever)
+
+pwd: print working directory
+
+cd: change directory
+- ~ :home
+- . :current dir
+- / :root directory or separator
+- .. :parent directory
+
+mv: move/rename file
+
+cp: copy a file
+
+rm: remove a file
+- r flag: directory
+
+mkdir: make a directory
+
+ls: display files and directoried in current directory
+- d flag: only list directories
+- a flag: list all files including hidden ones
+- l flag: show long listing including permissio ninfo
+- s flag: show size of each file in blocks 
+
+sudo: execute command as master user
+
+ln: create link
+- hard links: to physical data (direct point to data; immune to changes since direct to data)
+	- A normal file is considered as a hard link to data, so with a file default will be 1 hard link
+- symbolics links to file (-s) (points to file that points to data; changing original messes up soft link)
+
+touch: update access and modify time to current time
+- touch filename
+- touch -t 201101311759.30 filename (set access and modification time to 2011 January 31 time 17:59:30)
+
+cat: shows contents of a file
+
+find: finds a file and return the path of the target file
+- -name: name of the file
+- -perm: permission of a file
+- -user: owner of a file
+- -maxdepth: hoe many levels to search
+
+RegExp: find . -name "file1*" if you only know the file1 part of the filename (* is like a placeholder in regex)
+
+Man: manual page
+- hit q to exit
+
+------------------------------------------------------------------------------------------------------------------
+LINUX FILE PERMISSIONS:
+
+Ordering of Permissions:
+next 3 are user permissions
+next 3 are group permissions
+last 3 are for everyone else
+Then number of hard links
+User name
+group name
+size
+date/time last modified
+filename
+R: readable
+W: writeable
+E: executable 
+
+chmod: add permissions to a file; chmod to a file affects the hard link permissions as well, not soft link's though...
+Each digit corresponds to the 3 sections of permission: user, group, other (___):
+- 0: nonde
+- 1: execute only
+- 2: write only
+- 3: write and execute
+- 4: read only
+- 5: read and execute
+- 6: read and write
+- 7: full
+
+//==========================================================
+
+Everything is either a file or process
+- Process: an executing program identified by PID
+- File: collection of data
+	- Document
+	- Text of program
+	- Executable
+	- Directory
+	- Devices
+
+Libraries and such will go to other top leverl directories
+
+Absolute vs. Relative Path:
+- Absolute path is always from root
+- Relative path is from what directory we are in
+
+

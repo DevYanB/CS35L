@@ -1,0 +1,50 @@
+1. 
+$ git clone https://git.savannah.gnu.org/git/diffutils.git  hwDiffutils/
+
+2.
+$ git checkout -b "quote" "v3.0"
+
+3.
+$ patch -p1 < quote-3.0-patch.txt
+$ git status //to check that there are 6 modified files as before, and this checks out!
+
+4 & 5.
+$ emacs [each file with changes(the 6 files)]
+(emacs) C-x 4 a
+Added ChangeLog entries: Changes string quotes ` to ' in use and --help
+
+6.
+$ git add .
+$ git commit -F ChangeLog
+
+7.
+$ git format-patch -1 --stdout > formatted-patch.txt
+
+8. 
+$ git am gPAtch.txt (my partner's patch file)//patches and commits
+$ ./bootstrap
+$ wget https://web.cs.ucla.edu/classes/fall18/cs35L/assign/diffutils-gets.diff
+$ patch -p0 < diffutils-gets.diff
+$ ./configure
+$ make
+$ make check
+
+9.
+$ make distdir //Works, and inspecting Changelog at specified location shows Galen's edits!
+$ cd diffutils-3.0.1-114c/
+$ cat ChangeLog
+2018-12-05  Galen Wong  <galen@lnxsrv06.seas.ucla.edu>
+
+	2018-12-04 Galen Wong <galen@lnxsrv06.seas.ucla.edu>
+		* cmp.c (try_help, specify_ignore_initial, usage, main):
+		* diff.c (main, try_help, option_help_msgid, specify_value, compare_files):
+		* diff3.c (main, try_help, option_help_msgid, usage, read_diff):
+		* dir.c (compare_names):
+		* sdiff.c (try_help, usage, check_child_status, main):
+		* util.c (finish_output):
+		Quote 'like this' in output.
+
+10.
+$ cd ~eggert/src/gnu/emacs
+$ gitk
+//Works, and attached is information

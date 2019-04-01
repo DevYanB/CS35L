@@ -1,0 +1,63 @@
+1. First, I checked that I had the right version of sort:
+
+$ which sort
+/usr/bin/sort
+
+This is not correct, so change the path to the one specified on the spec that has the multithread capability that we want!
+
+$ export PATH=/usr/local/cs/bin:$PATH
+
+$ which sort
+/usr/local/cs/bin/sort
+
+$ sort --version
+sort (GNU coreutils) 8.30
+
+2. Now to start official testing! Create the testing file
+od: dump files in octal and other formats
+
+How to do from site: "First, generate a file containing 2²⁴ random single-precision floating point numbers, in textual form, one per line with no white space" ?
+
+Reading through man of od, -t allows for specification of type of data dump, and -f specifies floating points. -N specifies byte number, keeping in mind every float is 8 bytes.
+
+$ od -An -tf -N 134217728 < /dev/urandom | tr -s ' ' '\n' | sed '/^$/d' > tst.txt
+
+Creates a file txt.txt with the specified number of floats! (You wont believe how long it took to figure this nonsense out before I saw it on the TA slides...)
+
+$ wc -l tst.txt
+16777216 tst.txt
+
+3.Continue testing with actual testing!
+
+$ time -p sort -g tst.txt > /dev/null
+real 100.24
+user 560.64
+sys 1.12
+
+Above is without any thread specification. Time to test with parallelization!
+
+|| : 1
+$ time -p sort -g --parallel=1 tst.txt > /dev/null
+real 294.30
+user 293.86
+sys 0.43
+
+|| : 2
+$ time -p sort -g --parallel=2 tst.txt > /dev/null
+real 151.92
+user 290.46
+sys 0.47
+
+|| : 4
+$ time -p sort -g --parallel=4 tst.txt > /dev/null
+real 82.93
+user 282.89
+sys 0.59
+
+|| : 8
+$ time -p sort -g --parallel=8 tst.txt > /dev/null
+real 82.33
+user 283.67
+sys 0.72
+
+

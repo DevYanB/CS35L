@@ -1,0 +1,150 @@
+1. Installing and unpacking the tar:
+
+$ wget https://web.cs.ucla.edu/classes/fall18/cs35L/assign/coreutils-with-bug.tar.gz
+$ tar -xvzf coreutils-with-bug.tar.gz
+$ mkdir testingCore
+$ cd coreutils-with-bug
+$ ./configure --prefix='/u/cs/ugrad/devyan/p4For35L/testingCore'
+$ make
+
+Here is the error we get:
+n file included from utimecmp.c:41:0:
+utimens.h:2:5: error: conflicting types for 'futimens'
+ int futimens (int, char const *, struct timespec const [2]);
+     ^
+In file included from utimecmp.h:25:0,
+                 from utimecmp.c:25:
+/usr/include/sys/stat.h:373:12: note: previous declaration of 'futimens' was here
+ extern int futimens (int __fd, const struct timespec __times[2]) __THROW;
+            ^
+make[3]: *** [utimecmp.o] Error 1
+make[3]: Leaving directory `/w/home.17/cs/ugrad/devyan/p4For35L/coreutils-with-bug/lib'
+make[2]: *** [all] Error 2
+make[2]: Leaving directory `/w/home.17/cs/ugrad/devyan/p4For35L/coreutils-with-bug/lib'
+make[1]: *** [all-recursive] Error 1
+make[1]: Leaving directory `/w/home.17/cs/ugrad/devyan/p4For35L/coreutils-with-bug'
+make: *** [all] Error 2
+
+2. Getting the patch for the error:
+
+$ wget https://web.cs.ucla.edu/classes/fall18/cs35L/assign/coreutils.diff
+
+3. Apply the patch:
+
+$ patch -p0 < coreutils.diff
+
+Runs successfully!
+(The error was a name conflict, so the patch does a rename, essentially)
+
+4. Try again to replicate the bug:
+
+Since configure is already run, we can just run make install:
+$ make install
+
+5. Testing and seeing the bug:
+
+$ TZ=UTC0 ~/p4For35L/testingCore/bin/ls -lt --full-time wwi-armistice now now1
+-rw-r--r-- 1 devyan csugrad 0 1918-11-11 11:00:00.000000000 +0000 wwi-armistice
+-rw-r--r-- 1 devyan csugrad 0 2018-11-02 07:28:05.966682274 +0000 now1
+-rw-r--r-- 1 devyan csugrad 0 2018-11-02 07:27:59.592506896 +0000 now
+
+The above shows the bug: a file with an old date is being treated as if it is in the future.
+
+6. Locating the issue:
+
+Within the temp folder, check ls with gdb:
+$ gdb ~/p4For35L/testingCore/bin/ls
+
+Then I look through the functions:
+
+(gdb) info functions
+
+After taking a look at a few of the functions, I see that there are a few ones that do time
+based comparisons, based on their name. atime, ctime, and mtime all look interesting, so
+I'll keep an eye out for them. I also notice a function called sort_files, that would be
+good to take a look at.
+
+(gdb) list sort_files
+(gdb) list 2959, 3000
+
+Interestingly enough, within sort_files there's a switch statement with all three of the
+cases I noticed relevant to time comparisons! To figure out which one is causing the
+particular error, I put a breakpoint at sort_files and then ran the ls code and passed
+in the three files as parameters with the following commands:
+
+(gdb) break sort_files
+(gdb) run -lt wwi-armistice now now1
+
+After stepping through the code, I see compare_mtime is the switch case that the program
+enters when checking for the time_type. So, i check to see what exactly is in compare_mtime:
+
+(gdb) list compare_mtime
+
+Within compare_mtime it seems there is another function, timespec_cmp, that is responsible
+for returning some value diff, which seems to be the difference between the times of two
+different files. There in lies the potential issue! If we are dealing with very old times,
+as with the WWI date case, there is a possibilty for integer overflow! This would lead to
+incorrect behavior, as I witnessed earlier.
+
+So I re-run the code, this time with a break point at the compare_mtime function, and step
+through until I reach the timespec_cmp function and see where it is located
+(they are located in the same file, actually, so simply placing the breakpoint and seeing
+the location of the break point will suffice to locate the file where the function resides):
+
+(gdb) break compare_mtime
+Breakpoint 1 at 0x403430: file ../lib/timespec.h, line 48.
+(gdb) run -lt wwi-armistice now now1
+step through until:
+timespec_cmp (a=0x617160, b=0x617210) at ../lib/timespec.h:48
+
+Now I have the file and line number, I exit out of gdb and check out the file:
+
+$ emacs ~/p4For35L/coreutils-with-bug/lib/timespec.h
+M-g-g 48 to go to line 48
+Best way to replace would be to remove and addition or subtraction and just do comparison:
+return a.tv_sec > b.tv_sec ? 1 : (a.tv_sec < b.tv_sec ? -1 : a.tv_nsec - b.tv_nsec);
+This check prevents the overflow/underflow issue.
+
+7. Fixing the issue finally and adding it
+
+I copy timespec.h to a different file:
+
+$ cp timespec.h timespec_o.h
+
+Then I edit the copied timespec.h with the above code and generate a diff file with a ChangeLog:
+
+$cd ~/p4For35L/coreutils-with-bug
+$ diff -u lib/timespec_o.h lib/timespec.h > lab4.diff
+$ emacs lab4.diff
+C-x 4 a
+
+Test patch with another download of coreutils-with-bug (fixed with naming patch as previously done)
+
+To test and confirm, I follow the same steps as done earlier and confirm that the WWI armistice
+occurs third in the list:
+
+[Follow same process as above except do ./configure without prefix for local]
+
+$ TZ=UTC0 ~/p4For35L/coreutils-with-bug/src/ls -lt --full-time wwi-armistice now now1
+-rw-r--r-- 1 devyan csugrad 0 2018-11-02 08:56:48.668146787 +0000 now1
+-rw-r--r-- 1 devyan csugrad 0 2018-11-02 08:56:42.067965115 +0000 now
+-rw-r--r-- 1 devyan csugrad 0 1918-11-11 11:00:00.000000000 +0000 wwi-armistice
+
+And now it works as expected!
+
+8. If you try the above but in your home directory:
+[Doing the necessary creation of files in ~]
+
+$ TZ=UTC0 ls -lt --full-time wwi-armistice now now1
+-rw-r--r-- 1 devyan csugrad 0 2054-12-17 17:28:16.000000000 +0000 wwi-armistice
+-rw-r--r-- 1 devyan csugrad 0 2018-11-03 01:25:14.304561000 +0000 now1
+-rw-r--r-- 1 devyan csugrad 0 2018-11-03 01:25:09.465110000 +0000 now
+
+It is unable to correctly measure and add the time to the file, so it has a very distant future date.
+This would indicate, as we saw in an example above, some sort of integer overflow.
+
+
+
+
+
+

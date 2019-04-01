@@ -1,0 +1,3 @@
+Dynamic linking of shared libraries at run time
+ldd
+

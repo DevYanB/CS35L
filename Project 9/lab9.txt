@@ -1,0 +1,149 @@
+1. I get a copy of diffutils directly:
+$ git clone https://git.savannah.gnu.org/git/diffutils.git
+
+2. I cd into the diffutils directory and use git log to get a log of the changes:
+$ git log > git-log.txt
+
+3. I use git tag to get the tags:
+$ git tag > git-tags.txt
+
+4. Searched for maint: quote 'like this' or "like this", not `like this' and then created the patch:
+$ emacs git-log.txt
+(In git-log.txt) M-c-s maint: quote 'like this' or "like this", not `like this'
+$ git format-patch -1 --stdout 62ca21c8c1a5aa3488589dcb191a4ef04ae9ed4f  > quote-patch.txt
+
+5. I looked at the git-tags.txt file and got the name of the branch to check out, then switched into it
+$ emacs git-tags.txt
+$ git checkout "v3.0"
+HEAD is now at 022cd5c... version 3.0
+
+6. Now in the v3 branch, I do the patch:
+$ patch -p1 < quote-patch.txt
+
+...
+Hunk #8 succeeded at 650 (offset -27 lines).
+patching file tests/help-version
+Hunk #1 succeeded at 75 (offset 1 line).
+Hunk #2 succeeded at 85 (offset 1 line).
+Hunk #3 succeeded at 96 (offset 1 line).
+Hunk #4 succeeded at 108 (offset 1 line).
+Hunk #5 succeeded at 140 (offset 1 line).
+Hunk #6 succeeded at 188 (offset 1 line).
+...
+
+7. Use git status to see what's happened
+$ git status
+# HEAD detached at v3.0
+# Changes not staged for commit:
+#   (use "git add <file>..." to update what will be committed)
+#   (use "git checkout -- <file>..." to discard changes in working directory)
+#
+#	modified:   NEWS
+#	modified:   README
+#	modified:   TODO
+#	modified:   doc/diagmeet.note
+#	modified:   ms/config.bat
+#	modified:   ms/config.site
+#	modified:   po/en.po
+#	modified:   src/analyze.c
+#	modified:   src/cmp.c
+#	modified:   src/context.c
+#	modified:   src/diff.c
+#	modified:   src/diff.h
+#	modified:   src/diff3.c
+#	modified:   src/dir.c
+#	modified:   src/ifdef.c
+#	modified:   src/io.c
+#	modified:   src/sdiff.c
+#	modified:   src/side.c
+#	modified:   src/system.h
+#	modified:   src/util.c
+#	modified:   tests/help-version
+#
+# Untracked files:
+#   (use "git add <file>..." to include in what will be committed)
+#
+#	#git-log.txt#
+#	NEWS.orig
+#	README-hacking.orig
+#	README-hacking.rej
+#	README.orig
+#	README.rej
+#	cfg.mk.orig
+#	cfg.mk.rej
+#	git-log.txt
+#	git-tags.txt
+#	ms/config.site.orig
+#	quote-patch.txt
+#	src/cmp.c.orig
+#	src/context.c.orig
+#	src/diff.c.orig
+#	src/diff.c.rej
+#	src/diff.h.orig
+#	src/diff3.c.orig
+#	src/diff3.c.rej
+#	src/dir.c.orig
+#	src/sdiff.c.orig
+#	src/system.h.orig
+#	src/util.c.orig
+#	tests/help-version.orig
+
+8 & 9. For all the files without a .c tag in the abovie changed but not updated section, I used vc-revert on the files
+(emacs) C-x v u
+
+For the .c files, I revert all the changes in the comments, but keep the changes in any c code I find, using C-c C-c to check each hunk in the .c file. To revert the relevant hunks in the .c files, I used the C-u C-c C-a command in emacs for each hunk.
+(emacs) C-x v = //using vc-diff to check the changes
+(emacs) C-c C-c
+(emacs) C-u C-c C-a
+(emacs) M-n
+
+10. 
+$ emacs src/*.c.rej
+Problems with diff3.c and diff.c, seems like the lines dont match up!
+I then went into the files and manually made the changes from ` to ' specified in the emacs diff log of rej
+
+11 & 12.
+$git clean -f //to remove untracked files
+$git status //does, in fact, only report 6 changed files, meaning our edits should be correct
+$ git diff > quote-3.0-patch.txt
+$  wc -l quote-3.0-patch.txt
+317 quote-3.0-patch.txt //looks about right!
+
+13. According to the README-hacking:
+$ ./bootstrap
+//applying patch
+$ wget https://web.cs.ucla.edu/classes/fall18/cs35L/assign/diffutils-gets.diff
+$ patch -p0 < diffutils-gets.diff
+$ ./configure
+$ make
+$ make check
+
+Sanity check (using the version of diffutils just built)
+$ ./src/diff . -
+./src/diff: cannot compare '-' to a directory
+$ ./src/diff --help //it's a lot, but it uses correct ''
+
+14. 
+$ mkdir diffutils-3.0
+$ mkdir diffutils-3.0-patch
+$ git clone ~eggert/src/gnu/diffutils diffutils-orig
+$ cd diffutils-orig
+$ git checkout 'v3.0'
+$ cp ./src/*.c ~/p9For35L/diffutils-3.0
+$ cd diffutils
+$ cp ./src/*.c ~/p9For35L/diffutils-3.0-patch/
+$ ./diffutils/src/diff -pru diffutils-3.0 diffutils-3.0-patch >quote-3.0-test.txt
+
+15.
+$ diff quote-3.0-test.txt ./diffutils/quote-3.0-patch.txt //There are a lot of differences, but they seem to simply be the quotation changes and file path changes.
+
+
+
+
+
+
+
+
+
+
+

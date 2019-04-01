@@ -1,0 +1,114 @@
+I started off by reviewing some C basics on inputting information and such.
+
+Using argc and char** args, we can take in input and arguements to be used in our code.
+
+1. To write tr2b.c, I started off using the error catching and checks mentioned in the spec
+	
+	Essentially, I first check for the correct amount of arguements. This has to be 3, since we are taking in two strings
+	and a file as input.
+
+	Then I took in the first 2 arguements and compared their lengths to ensure they were the same.
+
+	The next loop is to ensure that there are no duplicate elements within the "from" string, which represents
+	 the input to our transliteration. Implemented a very basic/inefficient check for n elems, going through n-k elems
+	 for each n elem, meaning n^2 check time for "from" string.
+
+	The last loop is the one that pulls the character from the buffered I/O and compares with each letter in "from"
+	string and transliterates the char to the one in the "to" string if it is determined true. This is then put back
+	into the buffered I/O and the currChar is updated. Otherwise, continue to the next character in the input.
+
+	Compiling the above:
+	$ gcc -std=c11 -o tr2b tr2b.c
+
+	Create a 5000000 byte file:
+	$ head --bytes=5000000 /dev/urandom > output.txt
+
+	Running the above code on a output.txt to output to res.txt and timing it, the result is produced:
+	$ time cat output.txt | ./tr2b '?#' 'ab' > res.txt	
+
+	real	0m0.226s
+	user	0m0.170s
+	sys	0m0.018s
+
+	$ time cat output.txt | ./tr2b '?#' 'ab'
+
+	real	0m56.598s
+	user	0m0.203s
+	sys	0m0.144s
+
+2. The logic of tr2u.c is pretty much the exact, except we are now not reading through the buffer but rather purely
+through unbuffered I/O. So most of the code is the same in the process as listed above, it is just that the main loop
+is implemented with read() and write() instead of getchar() and putchar(). 
+(REMEMBER TO INCLUDE <unistd.h>)
+
+	Compiling the above:
+	$ gcc -std=c11 -o tr2u tr2u.c
+
+	Running code with wame output.txt file to output into resu.txt created above:
+	$ time cat output.txt | ./tr2u '?#' 'ab' > resu.txt
+
+	real	0m9.948s
+	user	0m1.313s
+	sys	0m8.643s
+
+	$ time cat output.txt | ./tr2u '?#' 'ab'
+
+	real	0m53.249s
+	user	0m1.375s
+	sys	0m6.997s
+
+3. Time to test with strace and the output.txt file we created with 5000000 bytes (the below shows us
+the number of system calls, which can help us visualize the reason for longer/shorter runtimes)
+	
+	Outputting to terminal
+	$ strace –o strace_b1 ./tr2b ‘ABC’ ‘XYZ’ < output.txt
+	$ cat strace_b1 | wc -l
+	20510
+
+	$ strace -o strace_u1 ./tr2u 'ABC' 'XYZ' < output.txt
+	$ cat strace_u1 | wc -l
+	10000026
+
+	Outputting to a file
+	$ strace –o strace_b2 ./tr2b ‘ABC’ ‘XYZ’ < output.txt > ex_b.txt
+	$ cat strace_b2 | wc -l
+	1252
+
+	$ strace -o strace_u2 ./tr2u 'ABC' 'XYZ' < output.txt > ex_u.txt
+	$ cat strace_u2 | wc -l
+	10000026
+
+4. [DONE IN PART 2] ; The unbuffered is much slower than buffered, and the time that is "relevant" is
+the system time, since this can tell us CPU processing time, ie the time the system uses to execute the process. 
+
+Comparison of sfrob, sfrobu, sfrobs, sfrobu -f, and sfrobs -f :
+
+$ time cat output.txt | ./sfrobs
+real	0m10.476s
+user	0m0.246s
+sys	0m0.103s
+
+$ time cat output.txt | ./sfrobu
+real	0m14.221s
+user	0m1.510s
+sys	0m7.362s
+
+$ time cat output.txt | ./sfrob
+real	0m0.002s
+user	0m0.000s
+sys	0m0.002s
+
+$ time cat output.txt | ./sfrobu -f
+real	0m11.472s
+user	0m1.467s
+sys	0m7.334s
+
+$ time cat output.txt | ./sfrobs -f
+real	0m10.710s
+user	0m0.232s
+sys	0m0.105s
+
+
+
+
+

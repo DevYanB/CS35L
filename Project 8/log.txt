@@ -1,0 +1,169 @@
+//First step was to connect to the BeagleBone Wifi, which allows
+//me to configure the wifi via a pop up webpage that requested 
+//SSID and password.
+
+//After passing in the credentials for a private hotspot, my BeagleBone was connected to my wifi.
+
+//I then connected to that private network through my laptop and ssh'ed into the BeagleBone:
+
+$ ssh root@192.168.43.217
+Debian GNU/Linux 8
+
+BeagleBoard.org Debian Image 2016-10-20
+
+Support/FAQ: http://elinux.org/Beagleboard:BeagleBoneBlack_Debian
+
+default username:password is [debian:temppwd]
+
+Last login: Thu Nov 29 22:37:11 2018 from 192.168.43.135
+
+
+////////---BEAGLEBONE SETUP---////////
+
+//First step is to generate a pulbic.private rsa key pair
+
+root@beaglebone:~# ssh-keygen
+Generating public/private rsa key pair.
+Enter file in which to save the key (/root/.ssh/id_rsa):
+Created directory '/root/.ssh'.
+Enter passphrase (empty for no passphrase):
+Enter same passphrase again:
+Your identification has been saved in /root/.ssh/id_rsa.
+Your public key has been saved in /root/.ssh/id_rsa.pub.
+The key fingerprint is:
+79:22:18:10:fb:ff:ae:8e:57:8e:42:5e:78:9b:b9:bb root@beaglebone
+The key's randomart image is:
++---[RSA 2048]----+
+|  o.             |
+|   o             |
+|  . .            |
+|   . o   .       |
+|    o.. S .      |
+|    o.o..o       |
+|   o o.B         |
+|    o.*..        |
+|    .+E*o        |
++-----------------+
+
+//Now that I had a public/private keypair, I started set up for my lab partner
+
+//First, I add a user to the BeagleBone, with home directory as RishabS with user Rishab
+root@beaglebone:~# sudo useradd -d /home/RishabS -m Rishab
+
+//I then gave him as passphrase specific to his account
+root@beaglebone:~# sudo passwd Rishab
+Enter new UNIX password: [PSSWD: asdf1234]
+Retype new UNIX password: [PSSWD: asdf1234]
+passwd: password updated successfully
+
+//Once I had done that, I have to enable ssh'ing
+root@beaglebone:~# cd /home/RishabS/
+root@beaglebone:~# sudo mkdir .ssh
+root@beaglebone:~# sudo chown -R Rishab .ssh
+root@beaglebone:~# sudo chmod 700 .ssh
+
+//Next step is to remove the password authentication requirement for him 
+nano /etc/ssh/sshd_config
+...
+#PasswordAuthentication no
+...
+
+root@beaglebone:/home/RishabS# ifconfig
+...
+wlan0
+...
+inet addr:192.168.43.217
+...
+
+
+////////---CLIENT SETUP---////////
+
+//Time to start client set up! First 
+➜  ~ ssh-keygen
+Generating public/private rsa key pair.
+Enter file in which to save the key (/Users/devyanbiswas/.ssh/id_rsa):
+Enter passphrase (empty for no passphrase):
+Enter same passphrase again:
+Your identification has been saved in /Users/devyanbiswas/.ssh/id_rsa.
+Your public key has been saved in /Users/devyanbiswas/.ssh/id_rsa.pub.
+The key fingerprint is:
+SHA256:OExmcE0lqAXbDFHVklsmgG0IcnhGevLW67hPQhS1jtU devyanbiswas@Devyans-MacBook-Pro.local
+The key's randomart image is:
++---[RSA 2048]----+
+|.o=o*B+*++.      |
+|.+o.oX= =.+      |
+|ooo ++E  *       |
+| = =.= ..        |
+|  = o + S        |
+| o   . .         |
+|  . o            |
+|   =             |
+|  ooo            |
++----[SHA256]-----+
+
+//Then I sent my public key to my partner's server on my account
+➜  ~ ssh-copy-id -i Devyan@192.168.43.109
+/usr/bin/ssh-copy-id: INFO: Source of key(s) to be installed: "/Users/devyanbiswas/.ssh/id_rsa.pub"
+/usr/bin/ssh-copy-id: INFO: attempting to log in with the new key(s), to filter out any that are already installed
+/usr/bin/ssh-copy-id: INFO: 1 key(s) remain to be installed -- if you are prompted now it is to install the new keys
+Debian GNU/Linux 8
+
+BeagleBoard.org Debian Image 2016-10-20
+
+Support/FAQ: http://elinux.org/Beagleboard:BeagleBoneBlack_Debian
+
+default username:password is [debian:temppwd]
+
+Devyan@192.168.43.109's password:
+
+Number of key(s) added:        1
+
+Now try logging into the machine, with:   "ssh 'Devyan@192.168.43.109'"
+and check to make sure that only the key(s) you wanted were added.
+
+//Then I added the private key
+➜  ~ ssh-add
+Identity added: /Users/devyanbiswas/.ssh/id_rsa (devyanbiswas@Devyans-MacBook-Pro.local)
+
+//Login (this does not require passphrase from me anymore since we added private and public key then
+added to the server!)
+➜  ~ ssh Devyan@192.168.43.109
+Debian GNU/Linux 8
+
+BeagleBoard.org Debian Image 2016-10-20
+
+Support/FAQ: http://elinux.org/Beagleboard:BeagleBoneBlack_Debian
+
+default username:password is [debian:temppwd]
+
+Last login: Mon Dec  3 07:10:45 2018 from 192.168.43.135
+
+//Time to test port forwarding
+➜  ~ ssh -X Devyan@192.168.43.109
+$ firefox
+
+//Command above opens firefox running through XQuartz, so it works!
+
+
+////////---VERIFICATION OF HW AND LAB---////////
+[devyan@lnxsrv07 ~/p8For35L]$ mkdir -m go-rwx .gnupg
+[devyan@lnxsrv07 ~/p8For35L]$ gpg2 --homedir .gnupg --import hw-pubkey.asc
+gpg: keyring `.gnupg/secring.gpg' created
+gpg: keyring `.gnupg/pubring.gpg' created
+gpg: .gnupg/trustdb.gpg: trustdb created
+gpg: key D544DF91: public key "Devyan (Assignment8) <devyanbiswas@outlook.com>" imported
+gpg: Total number processed: 1
+gpg:               imported: 1  (RSA: 1)
+[devyan@lnxsrv07 ~/p8For35L]$ gpg2 --homedir .gnupg --verify eeprom.sig eeprom
+gpg: Signature made Thu 29 Nov 2018 11:17:58 PM PST using RSA key ID D544DF91
+gpg: Good signature from "Devyan (Assignment8) <devyanbiswas@outlook.com>"
+gpg: WARNING: This key is not certified with a trusted signature!
+gpg:          There is no indication that the signature belongs to the owner.
+Primary key fingerprint: D339 295C 515D 9EA0 5A5E  FDBC F9CB 1699 D544 DF91
+
+
+
+
+
+
+
